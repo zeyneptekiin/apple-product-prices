@@ -8,19 +8,8 @@ services:
     ports:
       - "27017:27017"
 
-  cron:
-    build:
-      context: ./src/cron
-      dockerfile: ./Dockerfile
-    volumes:
-      - ./src/web_scraping:/app/web_scraping
-    container_name: cron_service
-    restart: always
-
   webscraping:
     build:
       context: ./src/web_scraping
       dockerfile: Dockerfile
     container_name: web_scraping_service
-    depends_on:
-      - cron
