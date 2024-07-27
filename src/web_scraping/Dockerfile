@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y cron
 WORKDIR /app
 
 COPY requirements.txt ./
+COPY product_structure.py ./
 COPY products_scraper.py ./
 COPY my_cron_file /etc/cron.d/my_cron_file
 
