@@ -33,9 +33,26 @@ try:
 
                     product_name = elementName.get_text(strip=True)
                     product_price = elementPrice.get_text(strip=True)
-                    product = create_product(product_name, country_code, product_price)
 
-                    result = products.insert_one(product)
+                    existing_product = products.find_one({
+                        "name": product_name,
+                        "country": country_code,
+                        "category": "iphone"
+                    })
+
+                    if existing_product:
+
+                        if existing_product["prices"] != product_price:
+                            products.update_one(
+                                {"_id": existing_product["_id"]},
+                                {"$set": {"prices": product_price}}
+                            )
+                            print(f"Updated product: {product_name} in {country_code}")
+                    else:
+                        product = create_product(product_name, country_code, product_price)
+                        products.insert_one(product)
+                        print(f"Inserted new product: {product_name} in {country_code}")
+
                     index += 1
 
                 except Exception as e:
@@ -49,3 +66,6 @@ try:
 
 except errors.PyMongoError as e:
     print(f"MongoDB connection error: {e}")
+
+except FileNotFoundError as e:
+    print(f"File error: {e}")
