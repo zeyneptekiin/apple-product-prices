@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN chmod 0644 /etc/cron.d/my_cron_file && \
     crontab /etc/cron.d/my_cron_file
 
-CMD ["sh", "-c", "cron && python3 products_scraper.py"]
+CMD ["sh", "-c", "cron -f"]
