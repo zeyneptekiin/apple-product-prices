@@ -8,6 +8,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY countries.txt ./
+COPY products.txt ./
 COPY product_structure.py ./
 
 COPY products_scraper.py ./
