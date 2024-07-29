@@ -12,6 +12,7 @@ def create_database(items, country_code, keyword):
     for product_id, item in items.items():
         if isinstance(item, dict) and 'price' in item:
             product = create_product(
+                product_name=item.get('id', ''),
                 name=item.get('name', ''),
                 country=country_code,
                 price=item['price'].get('value', 0),
