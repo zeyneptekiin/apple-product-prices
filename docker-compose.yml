@@ -1,16 +1,27 @@
+version: '3.8'
+
 services:
   database:
     image: mongo:latest
     container_name: mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: "zeyneptekin"
+      MONGO_INITDB_ROOT_PASSWORD: "123456"
     ports:
       - "27017:27017"
 
-  webscraping:
+  web_scraping:
     build:
       context: ./src/web_scraping
       dockerfile: Dockerfile
     container_name: web_scraping_service
 
+  api:
+    build:
+      context: ./src/api
+      dockerfile: Dockerfile
+    container_name: api_service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
