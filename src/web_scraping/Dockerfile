@@ -7,15 +7,11 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY countries.txt ./
-COPY products.txt ./
-COPY product_structure.py ./
+COPY . .
+COPY cron_file /etc/cron.d/cron_file
 
-COPY products_scraper.py ./
-COPY my_cron_file /etc/cron.d/my_cron_file
-
-RUN chmod 0644 /etc/cron.d/my_cron_file && \
-    crontab /etc/cron.d/my_cron_file
+RUN chmod 0644 /etc/cron.d/cron_file && \
+    crontab /etc/cron.d/cron_file
 
 RUN touch /var/log/cron.log
 

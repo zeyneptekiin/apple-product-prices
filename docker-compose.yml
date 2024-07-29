@@ -13,3 +13,4 @@ services:
       context: ./src/web_scraping
       dockerfile: Dockerfile
     container_name: web_scraping_service
+
