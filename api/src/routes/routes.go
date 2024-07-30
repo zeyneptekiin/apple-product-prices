@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"apple-product-prices/src/api/handlers"
+	"apple-product-prices/api/src/handlers"
 	"github.com/gorilla/mux"
 )
 

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"apple-product-prices/src/api/utils"
+	"apple-product-prices/api/src/utils"
 	"context"
 	"encoding/json"
 	"fmt"

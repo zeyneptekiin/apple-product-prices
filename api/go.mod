@@ -1,4 +1,4 @@
-module apple-product-prices/src/api
+module apple-product-prices/api
 
 go 1.22.5
 

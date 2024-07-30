@@ -1,8 +1,8 @@
 package main
 
 import (
-	"apple-product-prices/src/api/routes"
-	"apple-product-prices/src/api/utils"
+	"apple-product-prices/api/src/routes"
+	"apple-product-prices/api/src/utils"
 	"log"
 	"net/http"
 )
