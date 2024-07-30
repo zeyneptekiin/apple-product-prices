@@ -10,9 +10,10 @@ import (
 )
 
 type Product struct {
-	Name    string `json:"name"`
-	Price   int    `json:"price"`
-	Country string `json:"country"`
+	Name     string `json:"name"`
+	Price    int    `json:"price"`
+	Country  string `json:"country"`
+	Category string `json:"category"`
 }
 
 func GetProductsByName(w http.ResponseWriter, r *http.Request) {
