@@ -12,13 +12,13 @@ services:
 
   web_scraping:
     build:
-      context: ./src/web_scraping
+      context: web_scraping
       dockerfile: Dockerfile
     container_name: web_scraping_service
 
   api:
     build:
-      context: ./src/api
+      context: api
       dockerfile: Dockerfile
     container_name: api_service
     ports:

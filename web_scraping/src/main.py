@@ -1,5 +1,5 @@
-from helpers.get_products_name import get_products_name
-from helpers.get_products_prices import get_products_prices
+from web_scraping.src.helpers.get_products_name import get_products_name
+from web_scraping.src.helpers.get_products_prices import get_products_prices
 
 
 def main():

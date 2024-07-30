@@ -2,15 +2,20 @@ from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from .create_product import create_product
 
+#todo: change file naming
 
+
+#todo: change function naming
 def create_database(items, country_code, keyword):
-    uri = "mongodb://zeyneptekin:123456@mongodb:27017"
+    uri = "mongodb://zeyneptekin:123456@mongodb:27017" #todo: to .env file
     client = MongoClient(uri)
     db = client['apple']
     collection = db['products']
 
     for product_id, item in items.items():
-        if isinstance(item, dict) and 'price' in item:
+        # todo: convert to -> if checkProductExists(item):
+
+        if checkProductExists(item):
             product = create_product(
                 product_name=item.get('id', ''),
                 name=item.get('name', ''),
@@ -38,3 +43,6 @@ def create_database(items, country_code, keyword):
 
             except PyMongoError as e:
                 print(f"MongoDB operation failed: {e}")
+
+def checkProductExists(item):
+    return isinstance(item, dict) and 'price' in item
