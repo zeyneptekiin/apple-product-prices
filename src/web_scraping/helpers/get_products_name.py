@@ -3,12 +3,12 @@ from bs4 import BeautifulSoup
 
 
 def get_products_name():
-    base_url = "https://www.apple.com/"
+    base_url = "https://www.apple.com"
     keywords = ["iphone", "ipad", "macbook", "airpods", "buy-watch"]
     content_values = {}
 
     for keyword in keywords:
-        url = f"{base_url}{keyword}"
+        url = f"{base_url}/{keyword}"
         try:
             response = requests.get(url)
             response.raise_for_status()
