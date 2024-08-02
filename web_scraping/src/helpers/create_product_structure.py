@@ -1,6 +1,6 @@
 import requests
 from typing import List, Dict
-from .create_database import create_database
+from helpers.create_database import create_database
 
 
 def create_product_structure(content_values: Dict[str, List[str]]):
@@ -12,10 +12,7 @@ def create_product_structure(content_values: Dict[str, List[str]]):
             response = requests.get(url)
             response.raise_for_status()
 
-            print(f"x")
-
             result_data = response.json()
-            print(f"y")
 
             items = result_data.get('items', {})
             if not isinstance(items, dict):

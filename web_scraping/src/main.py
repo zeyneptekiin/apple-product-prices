@@ -1,6 +1,6 @@
-from .helpers.get_products_name import get_products_name
-from .helpers.create_product_structure import create_product_structure
-from .helpers.add_product_prices import add_product_prices
+from helpers.get_products_name import get_products_name
+from helpers.create_product_structure import create_product_structure
+from helpers.add_product_prices import add_product_prices
 
 
 def main():

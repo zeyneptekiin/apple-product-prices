@@ -1,3 +1,5 @@
+import os
+
 from pymongo import MongoClient
 import requests
 from typing import List, Dict
@@ -9,7 +11,7 @@ def add_product_prices(category_products: Dict[str, List[str]]) -> None:
     client = MongoClient(uri)
     db = client['apple']
     collection = db['products']
-    country_file = 'countries.txt'
+    country_file = os.path.join('/app', 'countries.txt')
 
     all_product_names = [product_name for product_list in category_products.values() for product_name in product_list]
     parts = ','.join(all_product_names)

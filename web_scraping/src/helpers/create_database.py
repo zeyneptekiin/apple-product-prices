@@ -1,6 +1,8 @@
+import os
+
 from pymongo import MongoClient
 from typing import Dict
-from web_scraping.src.models.product_model import Product
+from models.product_model import Product
 
 
 def create_database(items: Dict[str, dict], keyword: str):
@@ -8,7 +10,7 @@ def create_database(items: Dict[str, dict], keyword: str):
     client = MongoClient(uri)
     db = client['apple']
     collection = db['products']
-    country_file = 'countries.txt'
+    country_file = os.path.join('/app', 'countries.txt')
 
     with open(country_file, 'r') as file:
         country_codes = file.read().splitlines()
@@ -23,6 +25,6 @@ def create_database(items: Dict[str, dict], keyword: str):
             category=keyword,
         )
 
-        print(f"Inserting product: {product.product.model_dump()}")
-        result = collection.insert_one(product.product.model_dump())
+        print(f"Inserting product: {product.model_dump()}")
+        result = collection.insert_one(product.model_dump())
         print(f"Insert result: {result.inserted_id}")
