@@ -1,10 +1,11 @@
-import requests
 from bs4 import BeautifulSoup
+import requests
+from typing import List, Dict
 
 
-def get_products_name():
+def get_products_name() -> Dict[str, List[str]]:
     base_url = "https://www.apple.com"
-    keywords = ["iphone", "ipad", "macbook", "airpods", "buy-watch"]
+    keywords = ["iphone", "ipad", "macbook", "airpods", "watch"]
     content_values = {}
 
     for keyword in keywords:
