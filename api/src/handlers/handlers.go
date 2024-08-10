@@ -62,7 +62,7 @@ func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
 
 	filter := bson.M{}
 
-	projection := bson.M{"product_name": 1, "_id": 0}
+	projection := bson.M{"name": 2, "product_name": 1, "_id": 0}
 
 	cursor, err := collection.Find(context.TODO(), filter, options.Find().SetProjection(projection))
 	if err != nil {
@@ -74,6 +74,7 @@ func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
 
 	var products []struct {
 		ProductName string `bson:"product_name" json:"product_name"`
+		Name        string `bson:"name" json:"name"`
 	}
 
 	if err = cursor.All(context.TODO(), &products); err != nil {
