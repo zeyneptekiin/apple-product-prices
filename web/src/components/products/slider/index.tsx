@@ -7,6 +7,7 @@ import 'swiper/css/pagination';
 
 import { Pagination } from 'swiper/modules';
 import { getProductDetails } from '@/services/getProductDetails/getProductDetails';
+import {getKeyText, CountryCode} from "@/services/getKeyText/getKeyText";
 
 interface PriceEntry {
     price: number;
@@ -61,7 +62,7 @@ export default function ProductSlider({ productName }: ProductSliderProps) {
                     return (
                         <SwiperSlide key={`${country}-${firstEntry.date}`}>
                             <div className="text-center">
-                                <p>Country: {country}</p>
+                                <p>{getKeyText(country as CountryCode)}</p>
                                 <p className="mt-3">{firstEntry.price.toLocaleString()}</p>
                             </div>
                         </SwiperSlide>
