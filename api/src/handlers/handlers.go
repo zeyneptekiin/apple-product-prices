@@ -6,21 +6,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
 )
 
-type Price struct {
-	Details map[string][]string `bson:"price" json:"price"`
+type PriceEntry struct {
+	Price *float64 `bson:"price" json:"price"`
+	VAT   *float64 `bson:"vat" json:"vat"`
+	Date  *string  `bson:"date" json:"date"`
 }
 
 type Product struct {
-	ID          string `bson:"_id,omitempty" json:"id,omitempty"`
-	ProductID   string `bson:"product_id" json:"product_id"`
-	ProductName string `bson:"product_name" json:"product_name"`
-	Price       Price  `bson:"price" json:"price"`
-	Name        string `bson:"name" json:"name"`
-	Category    string `bson:"category" json:"category"`
+	ID          string                  `bson:"_id,omitempty" json:"id,omitempty"`
+	ProductID   string                  `bson:"product_id" json:"product_id"`
+	ProductName string                  `bson:"product_name" json:"product_name"`
+	Price       map[string][]PriceEntry `bson:"price" json:"price"`
+	Name        string                  `bson:"name" json:"name"`
+	Category    string                  `bson:"category" json:"category"`
 }
 
 func GetProductsByName(w http.ResponseWriter, r *http.Request) {
@@ -34,24 +37,29 @@ func GetProductsByName(w http.ResponseWriter, r *http.Request) {
 	collection := utils.Client.Database("apple").Collection("products")
 	filter := bson.M{"product_name": productName}
 
-	cursor, err := collection.Find(context.TODO(), filter)
+	var product Product
+	err := collection.FindOne(context.TODO(), filter).Decode(&product)
 	if err != nil {
-		fmt.Printf("Query error: %v\n", err)
-		http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
+		if err == mongo.ErrNoDocuments {
+			http.Error(w, "Product not found", http.StatusNotFound)
+		} else {
+			fmt.Printf("Query error: %v\n", err)
+			http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
+		}
 		return
 	}
-	defer cursor.Close(context.TODO())
 
-	var products []Product
-	if err := cursor.All(context.TODO(), &products); err != nil {
-		fmt.Printf("Failed to decode cursor data: %v\n", err)
-		http.Error(w, "Failed to decode data", http.StatusInternalServerError)
-		return
+	filteredPrice := make(map[string][]PriceEntry)
+	for key, entries := range product.Price {
+		if len(entries) > 0 {
+			filteredPrice[key] = entries
+		}
 	}
+	product.Price = filteredPrice
 
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(products); err != nil {
-		fmt.Printf("Failed to encode products to JSON: %v\n", err)
+	if err := json.NewEncoder(w).Encode(product); err != nil {
+		fmt.Printf("Failed to encode product to JSON: %v\n", err)
 		http.Error(w, "Failed to encode data", http.StatusInternalServerError)
 		return
 	}
