@@ -1,10 +1,12 @@
 export default function Navbar() {
     return (
-        <nav className="fixed top-0 bg-amber-100 w-full h-16 flex items-center px-8 justify-between text-xl">
+        <nav className="w-full h-16 fixed top-0 bg-orange-50 flex justify-center">
+        <div className="w-[1440px] flex items-center px-8 justify-between text-xl font-medium text-blue-600">
             <p>Global Price Tracking</p>
             <ul className="flex gap-3">
                 <li>About</li>
             </ul>
+        </div>
         </nav>
     )
 }
