@@ -23,11 +23,3 @@ services:
       - "8080:8080"
     depends_on:
       - database
-
-    web:
-      build:
-        context: web
-        dockerfile: Dockerfile
-      container_name: web_service
-      ports:
-        - "5000:5000"
