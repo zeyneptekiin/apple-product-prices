@@ -1,7 +1,15 @@
 import Layout from "@/pages/layout";
 import Products from "@/components/products";
+import {getProductsName} from "@/services/getProductsName/getProductsName";
 
-export default function Home() {
+type HomeProps = {
+    productsInfo: {
+        product_name: string;
+        name: string;
+    }[];
+}
+
+export default function Home({productsInfo}: HomeProps) {
   return (
       <Layout>
           <section className="flex justify-center items-center mt-16">
@@ -12,9 +20,15 @@ export default function Home() {
                       <div className="col-span-5 bg-blue-50 pl-16 rounded-2xl py-2">Countries</div>
                   </div>
                   <div className="bg-black opacity-10 w-full h-[1px] mt-4"/>
-                  <Products/>
+                  <Products data={productsInfo}/>
               </div>
           </section>
       </Layout>
   );
+}
+
+export async function getServerSideProps() {
+    const productsInfo = await getProductsName();
+
+    return { props: { productsInfo } }
 }

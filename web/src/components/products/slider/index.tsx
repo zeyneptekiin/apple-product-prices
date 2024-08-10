@@ -1,12 +1,50 @@
+import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 
-import {Pagination } from 'swiper/modules';
+import { Pagination } from 'swiper/modules';
+import { getProductDetails } from '@/services/getProductDetails/getProductDetails';
 
-export default function ProductSlider() {
+interface PriceEntry {
+    price: number;
+    vat: number;
+    date: string;
+}
+
+interface ProductData {
+    id: string;
+    product_id: string;
+    product_name: string;
+    price: {
+        [country: string]: PriceEntry[];
+    };
+    name: string;
+    category: string;
+}
+
+interface ProductSliderProps {
+    productName: string;
+}
+
+export default function ProductSlider({ productName }: ProductSliderProps) {
+    const [productData, setProductData] = useState<ProductData | null>(null);
+
+    useEffect(() => {
+        const fetchProductData = async () => {
+            try {
+                const data = await getProductDetails(productName);
+                setProductData(data);
+            } catch (error) {
+                console.error('Error fetching product details:', error);
+            }
+        };
+
+        fetchProductData();
+    }, [productName]);
+
     return (
         <>
             <Swiper
@@ -15,38 +53,20 @@ export default function ProductSlider() {
                 modules={[Pagination]}
                 className="mySwiper"
             >
-                <SwiperSlide>
-                    <p className="text-center">Country</p>
-                    <p className="text-center mt-3">Price</p>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <p className="text-center">Country</p>
-                    <p className="text-center mt-3">Price</p>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <p className="text-center">Country</p>
-                    <p className="text-center mt-3">Price</p>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <p className="text-center">Country</p>
-                    <p className="text-center mt-3">Price</p>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <p className="text-center">Country</p>
-                    <p className="text-center mt-3">Price</p>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <p className="text-center">Country</p>
-                    <p className="text-center mt-3">Price</p>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <p className="text-center">Country</p>
-                    <p className="text-center mt-3">Price</p>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <p className="text-center">Country</p>
-                    <p className="text-center mt-3">Price</p>
-                </SwiperSlide>
+                {productData?.price && Object.entries(productData.price).map(([country, entries]) => {
+                    if (entries.length === 0) return null;
+
+                    const firstEntry = entries[0];
+
+                    return (
+                        <SwiperSlide key={`${country}-${firstEntry.date}`}>
+                            <div className="text-center">
+                                <p>Country: {country}</p>
+                                <p className="mt-3">{firstEntry.price.toLocaleString()}</p>
+                            </div>
+                        </SwiperSlide>
+                    );
+                })}
             </Swiper>
         </>
     );
