@@ -25,6 +25,11 @@ def create_database(items: Dict[str, dict], keyword: str):
             category=keyword,
         )
 
-        print(f"Inserting product: {product.model_dump()}")
-        result = collection.insert_one(product.model_dump())
-        print(f"Insert result: {result.inserted_id}")
+        existing_product = collection.find_one({"product_name": product.product_name})
+
+        if existing_product:
+            print(f"Product already exists: {product.model_dump()}")
+        else:
+            print(f"Inserting product: {product.model_dump()}")
+            result = collection.insert_one(product.model_dump())
+            print(f"Insert result: {result.inserted_id}")
