@@ -30,14 +30,14 @@ def add_product_prices(category_products: Dict[str, List[str]]) -> None:
             print(f"Fetching data from {url}")
 
             result_data = response.json()
-            print(f"Parsed JSON data from {url}: {result_data}")
+            print(f"Parsed JSON data from {url}")
 
             items = result_data.get('items', {})
             if not isinstance(items, dict):
                 print("Unexpected response format.")
                 continue
 
-            today_date = datetime.now().strftime('%Y-%m-%d')  # Today's date
+            today_date = datetime.now().strftime('%Y-%m-%d')
 
             for product_id, item in items.items():
                 price_info = item.get('price', {})

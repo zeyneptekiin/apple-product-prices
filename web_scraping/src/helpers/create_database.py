@@ -3,6 +3,7 @@ import os
 from pymongo import MongoClient
 from typing import Dict
 from models.product_model import Product
+from helpers.add_product_images import add_product_images
 
 
 def create_database(items: Dict[str, dict], keyword: str):
@@ -33,3 +34,4 @@ def create_database(items: Dict[str, dict], keyword: str):
             print(f"Inserting product: {product.model_dump()}")
             result = collection.insert_one(product.model_dump())
             print(f"Insert result: {result.inserted_id}")
+            add_product_images(product.name, product.category)
