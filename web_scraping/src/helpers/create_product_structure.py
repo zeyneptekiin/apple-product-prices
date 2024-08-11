@@ -22,6 +22,6 @@ def create_product_structure(content_values: Dict[str, List[str]]):
             create_database(items, keyword)
 
         except requests.RequestException as e:
-            print(f"a")
+            print(f"Request error for URL {url}: {e}")
         except ValueError as e:
-            print(f"b")
+            print(f"JSON decoding error for URL {url}: {e}")

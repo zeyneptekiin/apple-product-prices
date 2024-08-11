@@ -17,4 +17,4 @@ RUN touch /var/log/cron.log
 
 ENV PYTHONPATH /app/src
 
-CMD ["sh", "-c", "cron && tail -f /var/log/cron.log"]
+CMD ["sh", "-c", "/usr/local/bin/python3 /app/src/main.py && cron && tail -f /var/log/cron.log"]
