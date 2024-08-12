@@ -6,6 +6,7 @@ type HomeProps = {
     productsInfo: {
         product_name: string;
         name: string;
+        image: string;
     }[];
 }
 
