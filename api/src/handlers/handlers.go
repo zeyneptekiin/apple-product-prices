@@ -24,6 +24,7 @@ type Product struct {
 	Price       map[string][]PriceEntry `bson:"price" json:"price"`
 	Name        string                  `bson:"name" json:"name"`
 	Category    string                  `bson:"category" json:"category"`
+	Images      string                  `bson:"images" json:"images"`
 }
 
 func GetProductsByName(w http.ResponseWriter, r *http.Request) {
@@ -65,12 +66,12 @@ func GetProductsByName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
+func GetAllProductsName(w http.ResponseWriter) {
 	collection := utils.Client.Database("apple").Collection("products")
 
 	filter := bson.M{}
 
-	projection := bson.M{"name": 2, "product_name": 1, "_id": 0}
+	projection := bson.M{"images": 3, "name": 2, "product_name": 1, "_id": 0}
 
 	cursor, err := collection.Find(context.TODO(), filter, options.Find().SetProjection(projection))
 	if err != nil {
@@ -83,6 +84,7 @@ func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
 	var products []struct {
 		ProductName string `bson:"product_name" json:"product_name"`
 		Name        string `bson:"name" json:"name"`
+		Images      string `bson:"images" json:"images"`
 	}
 
 	if err = cursor.All(context.TODO(), &products); err != nil {
