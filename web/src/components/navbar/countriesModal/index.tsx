@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from "next/link";
 
 type CountryModalProps = {
     closeModal: () => void;
@@ -13,7 +14,14 @@ export default function CountryModal({ countries }: CountryModalProps) {
                 <div className="max-h-52 max-w-40 flex">
                 <ul className="overflow-x-auto">
                     {Object.entries(countries).map(([code, name]) => (
-                        <li key={code} className="py-1">{name}</li>
+                        <li key={code} className="py-1">
+                            <Link
+                                href={{
+                                    pathname: `/${code}`,
+                                }}
+                            >{name}
+                            </Link>
+                        </li>
                     ))}
                 </ul>
                 </div>
