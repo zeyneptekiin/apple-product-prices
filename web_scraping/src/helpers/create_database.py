@@ -21,7 +21,7 @@ def create_database(items: Dict[str, dict], keyword: str):
 
         product = Product(
             product_name=item.get('id', ''),
-            name=item.get('name', ''),
+            name=item.get('baseName', ''),
             price=price_dict,
             category=keyword,
         )
