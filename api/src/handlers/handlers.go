@@ -66,7 +66,7 @@ func GetProductsByName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetAllProductsName(w http.ResponseWriter) {
+func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
 	collection := utils.Client.Database("apple").Collection("products")
 
 	filter := bson.M{}
