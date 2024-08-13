@@ -9,13 +9,13 @@ import { Pagination } from 'swiper/modules';
 import { getProductDetails } from '@/services/getProductDetails/getProductDetails';
 import {getKeyText, CountryCode} from "@/services/getKeyText/getKeyText";
 
-interface PriceEntry {
+type PriceEntry = {
     price: number;
     vat: number;
     date: string;
 }
 
-interface ProductData {
+type ProductData = {
     id: string;
     product_id: string;
     product_name: string;
@@ -26,7 +26,7 @@ interface ProductData {
     category: string;
 }
 
-interface ProductSliderProps {
+type ProductSliderProps = {
     productName: string;
 }
 

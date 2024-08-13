@@ -23,7 +23,7 @@ export default function Home({productsInfo, lang}: HomeProps) {
                         <div className="col-span-5 bg-blue-50 pl-16 rounded-2xl py-2">Countries</div>
                     </div>
                     <div className="bg-black opacity-10 w-full h-[1px] mt-4"/>
-                    <Products data={productsInfo}/>
+                    <Products data={productsInfo} lang={lang}/>
                 </div>
             </section>
         </Layout>
@@ -32,11 +32,19 @@ export default function Home({productsInfo, lang}: HomeProps) {
 
 // @ts-ignore
 export async function getServerSideProps({ query }) {
-    const productsInfo = await getProductsName();
+    let lang = query.lang || "tr";
 
-    let lang;
-    if (!query.lang) {
-        lang = "tr"
-    } else lang = query.lang
-    return { props: { productsInfo, lang } }
+    try {
+        const productsInfo = await getProductsName();
+
+        if (!Array.isArray(productsInfo)) {
+            throw new Error('productsInfo is not an array');
+        }
+        return { props: { productsInfo, lang } };
+    } catch (error) {
+        console.error('Error fetching productsInfo:', error);
+
+        return { props: { productsInfo: [], lang } };
+    }
 }
+
