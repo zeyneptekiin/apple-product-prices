@@ -10,9 +10,13 @@ type HomeProps = {
         images: string;
     }[];
     lang: string;
+    currencyData: {
+        conversion_rates: any;
+    };
 }
 
 export default function Home({productsInfo, lang}: HomeProps) {
+
     return (
         <Layout>
             <section className="flex justify-center items-center mt-16">
@@ -38,7 +42,7 @@ export async function getServerSideProps({ query }) {
         const productsInfo = await getProductsName();
 
         if (!Array.isArray(productsInfo)) {
-            throw new Error('productsInfo is not an array');
+            console.error('productsInfo is not an array');
         }
         return { props: { productsInfo, lang } };
     } catch (error) {

@@ -8,6 +8,7 @@ import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { getProductDetails } from '@/services/getProductDetails/getProductDetails';
 import {getKeyText, CountryCode} from "@/services/getKeyText/getKeyText";
+import {getCurrency} from "@/services/getCurrency/getCurrency";
 
 type PriceEntry = {
     price: number;
@@ -28,9 +29,10 @@ type ProductData = {
 
 type ProductSliderProps = {
     productName: string;
+    currentData: any;
 }
 
-export default function ProductSlider({ productName }: ProductSliderProps) {
+export default function ProductSlider({ productName, currentData }: ProductSliderProps) {
     const [productData, setProductData] = useState<ProductData | null>(null);
 
     useEffect(() => {
@@ -46,6 +48,8 @@ export default function ProductSlider({ productName }: ProductSliderProps) {
         fetchProductData();
     }, [productName]);
 
+    console.log(currentData);
+
     return (
         <>
             <Swiper
@@ -58,12 +62,14 @@ export default function ProductSlider({ productName }: ProductSliderProps) {
                     if (entries.length === 0) return null;
 
                     const firstEntry = entries[0];
+                    const currencyCode = getCurrency(country as CountryCode);
+                    const currentPrice = Math.round(firstEntry.price / currentData?.[currencyCode]);
 
                     return (
                         <SwiperSlide key={`${country}-${firstEntry.date}`}>
                             <div className="text-center">
                                 <p>{getKeyText(country as CountryCode)}</p>
-                                <p className="mt-3">{firstEntry.price.toLocaleString()}</p>
+                                <p className="mt-3">{currentPrice}</p>
                             </div>
                         </SwiperSlide>
                     );

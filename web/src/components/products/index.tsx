@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import ProductSlider from "@/components/products/slider";
 import { getProductDetails } from "@/services/getProductDetails/getProductDetails";
+import {getProductPrice} from "@/services/getProductPrice/getProductPrice";
+import {getCurrency, CountryCode} from "@/services/getCurrency/getCurrency";
 
 type Product = {
     product_name: string;
@@ -16,6 +18,7 @@ type ProductsProps = {
 export default function Products({ data = [], lang }: ProductsProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [productDetails, setProductDetails] = useState<Map<string, any>>(new Map());
+    const [currentData, setCurrentData] = useState("");
 
     useEffect(() => {
         async function fetchDetails() {
@@ -29,6 +32,14 @@ export default function Products({ data = [], lang }: ProductsProps) {
                 }
             }
             setProductDetails(detailsMap);
+
+            try {
+                const currency = getCurrency(lang as CountryCode)
+                const prices = await getProductPrice(currency);
+                setCurrentData(prices?.conversion_rates);
+            } catch (error) {
+                console.error(`Failed to fetch prices`, error);
+            }
         }
 
         fetchDetails();
@@ -62,7 +73,7 @@ export default function Products({ data = [], lang }: ProductsProps) {
                                 {details?.price[lang] ? details.price[lang][0].price : "No price for this country"}
                             </div>
                             <div className="col-span-5 justify-center items-center">
-                                <ProductSlider productName={product.product_name} />
+                                <ProductSlider productName={product.product_name} currentData={currentData} />
                             </div>
                         </div>
                     );
