@@ -27,6 +27,14 @@ type Product struct {
 	Images      string                  `bson:"images" json:"images"`
 }
 
+type ExchangeRatesResponse struct {
+	Result             string             `json:"result"`
+	TimeLastUpdateUnix int64              `json:"time_last_update_unix"`
+	TimeLastUpdateUTC  string             `json:"time_last_update_utc"`
+	BaseCode           string             `json:"base_code"`
+	ConversionRates    map[string]float64 `json:"conversion_rates"`
+}
+
 func GetProductsByName(w http.ResponseWriter, r *http.Request) {
 	productName := r.URL.Query().Get("product_name")
 
@@ -100,4 +108,34 @@ func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Failed to encode products to JSON:", err)
 		http.Error(w, "Failed to encode data", http.StatusInternalServerError)
 	}
+}
+
+func GetExchangeRates(w http.ResponseWriter, r *http.Request) {
+	baseCurrency := r.URL.Query().Get("base")
+	if baseCurrency == "" {
+		baseCurrency = "USD"
+	}
+
+	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/84c8f7c909d035da5a569617/latest/%s", baseCurrency)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		http.Error(w, "Error making GET request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, fmt.Sprintf("Error: Status code %d", resp.StatusCode), http.StatusInternalServerError)
+		return
+	}
+
+	var data ExchangeRatesResponse
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		http.Error(w, "Error decoding JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
 }

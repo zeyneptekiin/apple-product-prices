@@ -9,5 +9,7 @@ func SetupRoutes() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/products", handlers.GetProductsByName).Methods("GET")
 	r.HandleFunc("/products/name", handlers.GetAllProductsName).Methods("GET")
+	r.HandleFunc("/exchange", handlers.GetExchangeRates).Methods("GET")
+
 	return r
 }
