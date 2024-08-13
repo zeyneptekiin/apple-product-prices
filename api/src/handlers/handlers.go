@@ -116,7 +116,7 @@ func GetExchangeRates(w http.ResponseWriter, r *http.Request) {
 		baseCurrency = "USD"
 	}
 
-	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/84c8f7c909d035da5a569617/latest/%s", baseCurrency)
+	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/4948ebd69671139c0adbb333/latest/%s", baseCurrency)
 
 	resp, err := http.Get(url)
 	if err != nil {
