@@ -7,12 +7,18 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: "123456"
     ports:
       - "27017:27017"
+    networks:
+      - backend
 
   web_scraping:
     build:
       context: web_scraping
       dockerfile: Dockerfile
     container_name: web_scraping_service
+    depends_on:
+      - database
+    networks:
+      - backend
 
   api:
     build:
@@ -23,6 +29,9 @@ services:
       - "8080:8080"
     depends_on:
       - database
+    networks:
+      - backend
+      - frontend
 
   web:
     build:
@@ -32,4 +41,13 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - database
+      - api
+    networks:
+      - backend
+      - frontend
+
+networks:
+  frontend:
+    external: false
+  backend:
+    external: false
