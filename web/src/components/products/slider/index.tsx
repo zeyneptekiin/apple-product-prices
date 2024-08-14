@@ -9,6 +9,7 @@ import { Pagination } from 'swiper/modules';
 import { getProductDetails } from '@/services/getProductDetails/getProductDetails';
 import {getKeyText, CountryCode} from "@/services/getKeyText/getKeyText";
 import {getCurrency} from "@/services/getCurrency/getCurrency";
+import {CurrencySymbol, getSymbol} from "@/services/getSymbol/getSymbol";
 
 type PriceEntry = {
     price: number;
@@ -30,9 +31,10 @@ type ProductData = {
 type ProductSliderProps = {
     productName: string;
     currentData: any;
+    lang: string;
 }
 
-export default function ProductSlider({ productName, currentData }: ProductSliderProps) {
+export default function ProductSlider({ productName, currentData, lang }: ProductSliderProps) {
     const [productData, setProductData] = useState<ProductData | null>(null);
 
     useEffect(() => {
@@ -69,7 +71,7 @@ export default function ProductSlider({ productName, currentData }: ProductSlide
                         <SwiperSlide key={`${country}-${firstEntry.date}`}>
                             <div className="text-center">
                                 <p>{getKeyText(country as CountryCode)}</p>
-                                <p className="mt-3">{currentPrice}</p>
+                                <p className="mt-3">{currentPrice + " " + getSymbol(lang as CurrencySymbol)}</p>
                             </div>
                         </SwiperSlide>
                     );

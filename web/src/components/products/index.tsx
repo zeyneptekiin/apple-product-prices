@@ -3,6 +3,7 @@ import ProductSlider from "@/components/products/slider";
 import { getProductDetails } from "@/services/getProductDetails/getProductDetails";
 import {getProductPrice} from "@/services/getProductPrice/getProductPrice";
 import {getCurrency, CountryCode} from "@/services/getCurrency/getCurrency";
+import {CurrencySymbol, getSymbol} from "@/services/getSymbol/getSymbol";
 
 type Product = {
     product_name: string;
@@ -70,10 +71,10 @@ export default function Products({ data = [], lang }: ProductsProps) {
                                 <p className="text-center mt-2">{product.name}</p>
                             </div>
                             <div className="flex justify-center items-center">
-                                {details?.price[lang] ? details.price[lang][0].price : "No price for this country"}
+                                {details?.price[lang] ? (details.price[lang][0].price + " " + getSymbol(lang as CurrencySymbol)) : "No price for this country"}
                             </div>
                             <div className="col-span-5 justify-center items-center">
-                                <ProductSlider productName={product.product_name} currentData={currentData} />
+                                <ProductSlider productName={product.product_name} currentData={currentData} lang={lang}/>
                             </div>
                         </div>
                     );
