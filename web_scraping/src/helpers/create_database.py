@@ -4,10 +4,11 @@ from pymongo import MongoClient
 from typing import Dict
 from models.product_model import Product
 from helpers.add_product_images import add_product_images
+from helpers.product_images_data import products
 
 
 def create_database(items: Dict[str, dict], keyword: str):
-    uri = "mongodb://zeyneptekin:123456@mongodb:27017/"  # TODO: Move to .env file
+    uri = "mongodb://zeyneptekin:123456@mongodb:27017/"
     client = MongoClient(uri)
     db = client['apple']
     collection = db['products']
@@ -34,4 +35,5 @@ def create_database(items: Dict[str, dict], keyword: str):
             print(f"Inserting product: {product.model_dump()}")
             result = collection.insert_one(product.model_dump())
             print(f"Insert result: {result.inserted_id}")
-            add_product_images(product.name, product.category)
+
+            add_product_images(products, product.product_name)
