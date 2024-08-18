@@ -1,0 +1,144 @@
+definitions:
+  handlers.ExchangeRatesResponse:
+    properties:
+      base_code:
+        type: string
+      conversion_rates:
+        additionalProperties:
+          type: number
+        type: object
+      result:
+        type: string
+      time_last_update_unix:
+        type: integer
+      time_last_update_utc:
+        type: string
+    type: object
+  handlers.PriceEntry:
+    properties:
+      date:
+        type: string
+      price:
+        type: number
+      vat:
+        type: number
+    type: object
+  handlers.Product:
+    properties:
+      category:
+        type: string
+      id:
+        type: string
+      images:
+        type: string
+      name:
+        type: string
+      price:
+        additionalProperties:
+          items:
+            $ref: '#/definitions/handlers.PriceEntry'
+          type: array
+        type: object
+      product_id:
+        type: string
+      product_name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is an API to get Apple product prices.
+  termsOfService: http://swagger.io/terms/
+  title: Apple Product Prices API
+  version: "1.0"
+paths:
+  /exchange:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the latest exchange rates from an external API.
+      parameters:
+      - description: Base currency (default is USD)
+        in: query
+        name: base
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.ExchangeRatesResponse'
+        "500":
+          description: Failed to fetch or decode data
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get exchange rates
+      tags:
+      - Exchange
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a single Apple product by its name from the database.
+      parameters:
+      - description: Name of the product
+        in: query
+        name: product_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Product'
+        "400":
+          description: Missing 'product_name' query parameter
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Product not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to fetch data
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a product by name
+      tags:
+      - Products
+  /products/name:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all Apple product names, including images.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties:
+                type: string
+              type: object
+            type: array
+        "500":
+          description: Failed to fetch data
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all product names
+      tags:
+      - Products
+swagger: "2.0"

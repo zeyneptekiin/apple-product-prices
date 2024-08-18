@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"io"
 	"net/http"
 )
 
@@ -35,6 +36,18 @@ type ExchangeRatesResponse struct {
 	ConversionRates    map[string]float64 `json:"conversion_rates"`
 }
 
+// GetProductsByName handles the request to retrieve a product by its name.
+// @Summary Get a product by name
+// @Description Retrieves a single Apple product by its name from the database.
+// @Tags Products
+// @Accept  json
+// @Produce  json
+// @Param product_name query string true "Name of the product"
+// @Success 200 {object} Product
+// @Failure 400 {object} map[string]string "Missing 'product_name' query parameter"
+// @Failure 404 {object} map[string]string "Product not found"
+// @Failure 500 {object} map[string]string "Failed to fetch data"
+// @Router /products [get]
 func GetProductsByName(w http.ResponseWriter, r *http.Request) {
 	productName := r.URL.Query().Get("product_name")
 
@@ -74,6 +87,15 @@ func GetProductsByName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetAllProductsName handles the request to retrieve all product names.
+// @Summary Get all product names
+// @Description Retrieves a list of all Apple product names, including images.
+// @Tags Products
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} map[string]string
+// @Failure 500 {object} map[string]string "Failed to fetch data"
+// @Router /products/name [get]
 func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
 	collection := utils.Client.Database("apple").Collection("products")
 
@@ -87,7 +109,12 @@ func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
 		return
 	}
-	defer cursor.Close(context.TODO())
+	defer func(cursor *mongo.Cursor, ctx context.Context) {
+		err := cursor.Close(ctx)
+		if err != nil {
+
+		}
+	}(cursor, context.TODO())
 
 	var products []struct {
 		ProductName string `bson:"product_name" json:"product_name"`
@@ -110,6 +137,16 @@ func GetAllProductsName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetExchangeRates handles the request to retrieve exchange rates.
+// @Summary Get exchange rates
+// @Description Retrieves the latest exchange rates from an external API.
+// @Tags Exchange
+// @Accept  json
+// @Produce  json
+// @Param base query string false "Base currency (default is USD)"
+// @Success 200 {object} ExchangeRatesResponse
+// @Failure 500 {object} map[string]string "Failed to fetch or decode data"
+// @Router /exchange [get]
 func GetExchangeRates(w http.ResponseWriter, r *http.Request) {
 	baseCurrency := r.URL.Query().Get("base")
 	if baseCurrency == "" {
@@ -123,7 +160,12 @@ func GetExchangeRates(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error making GET request", http.StatusInternalServerError)
 		return
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		http.Error(w, fmt.Sprintf("Error: Status code %d", resp.StatusCode), http.StatusInternalServerError)
@@ -137,5 +179,8 @@ func GetExchangeRates(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	err = json.NewEncoder(w).Encode(data)
+	if err != nil {
+		return
+	}
 }
